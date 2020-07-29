@@ -7,28 +7,19 @@ import {
   StyleSheet,
   Linking,
 } from 'react-native';
-import {useSelector,useDispatch} from 'react-redux'
+
 import Modal from '../Modal';
-import {getFollowers} from '../../Redux/Actions/listAction'
+import Profile from '../Profile';
 
 export default (props) => {
   const [visiabl, setVisiabl] = React.useState(false);
-  const dispatch = useDispatch()
-  const followers = useSelector((state)=>state&&state.users&&state.users.followers)
-  const following = useSelector((state)=>state&&state.users&&state.users.following)
+  const [currentUser, setCurrentUser] = React.useState('');
+
   const clickHandler = () => {
     setVisiabl(!visiabl);
-    console.log(props.data);
+    setCurrentUser(props.data)
   };
   const {name, img, link} = props;
-
-  React.useEffect(()=>{
-    
-if(!followers&&!following&&props.data&&visiabl) dispatch(getFollowers(props.data.login))
-return () => {
-  console.log('hell unMount')
-}
-  },[])
 
   return (
     <View
@@ -52,34 +43,13 @@ return () => {
           </View>
         </TouchableOpacity>
       ) : null}
-      <Modal
-        visible={visiabl}
-        close={() => setVisiabl(!visiabl)}
-        Component={(item) => (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignContent: 'center',
-              alignItems: 'center',
-            }}>
-            <View
-              style={{
-                flex: 0.6,
-                borderRadius: 100,
-                backgroundColor: 'red',
-                justifyContent: 'center',
-                alignContent: 'center',
-              }}>
-              <Image
-                style={{width: '100%', height: '100%'}}
-                source={require('../../assets/doctor.png')}
-              />
-            </View>
-            <Text>Hello{item.login}</Text>
-          </View>
-        )}
-      />
+      {visiabl ? (
+        <Modal
+          visible={visiabl}
+          close={() => setVisiabl(!visiabl)}
+          Component={()=><Profile data={currentUser} />}
+        />
+      ) : null}
     </View>
   );
 };

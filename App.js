@@ -1,30 +1,21 @@
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  View,
-  FlatList,
-  SafeAreaView,
-  ActivityIndicator,
-} from 'react-native';
+import {View, FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
 import {debounce} from 'lodash';
 import SearchBar from './src/Components/searchbar';
 import Card from './src/Components/card';
 
-import {
-  getListOfUser,
-  getUser,
-  getFollowers,
-} from './src/Redux/Actions/listAction';
+import {getListOfUser, getUser} from './src/Redux/Actions/listAction';
 // import dummyImage from './src/assets/doctor.png'
 
 export default function App() {
   const [data, setData] = React.useState([]);
   // const [arry, setArray] = React.useState([]);
   const [value, setValue] = React.useState('');
-  
+
   const [loading, setLoading] = React.useState(false);
   const handler = React.useCallback(
-    debounce((val) => Search(val), 2000),
+    debounce((val) => Search(val), 1000),
     [],
   );
   const dispatch = useDispatch();
@@ -59,7 +50,9 @@ export default function App() {
       setData(usersData);
       // setArray(usersData);
     }
-  }, [usersData]);
+
+    if(userData&&userData.message&&value)alert(userData.message)
+  }, [usersData,userData]);
 
   const mixedData = value && userData ? [userData] : data;
   return (
@@ -86,7 +79,6 @@ export default function App() {
                 link={item.html_url}
                 img={item.avatar_url}
                 data={item}
-                
               />
             )}
             keyExtractor={(item) => item.node_id}
